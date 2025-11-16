@@ -47,6 +47,29 @@ export function roll1d6(): number {
 }
 
 /**
+ * Determine danger level based on 1d6 roll
+ * 1 = Safe, 2-3 = Unsafe, 4-5 = Risky, 6 = Deadly
+ * @returns Object with danger level and roll result
+ */
+export function rollDangerLevel(): { level: 'safe' | 'unsafe' | 'risky' | 'deadly', roll: number } {
+  const roll = roll1d6()
+  
+  let level: 'safe' | 'unsafe' | 'risky' | 'deadly'
+  
+  if (roll === 1) {
+    level = 'safe'
+  } else if (roll >= 2 && roll <= 3) {
+    level = 'unsafe'
+  } else if (roll >= 4 && roll <= 5) {
+    level = 'risky'
+  } else {
+    level = 'deadly'
+  }
+  
+  return { level, roll }
+}
+
+/**
  * Roll 1d20 (one twenty-sided die)
  * @returns The result of one d20 roll (1-20)
  */

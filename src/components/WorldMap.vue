@@ -18,8 +18,8 @@ const props = withDefaults(defineProps<Props>(), {
 // Initialize world map with starting hex at 0,0
 const hexMap = ref<Map<string, Hex>>(new Map())
 
-// Create starting hex
-const startingHex = createHex(0, 0, 'grass')
+// Create starting hex (always safe)
+const startingHex = createHex(0, 0, 'grass', undefined, true)
 hexMap.value.set(startingHex.id, startingHex)
 
 // Pan state
@@ -150,6 +150,20 @@ const getHexColor = (hex: Hex | undefined): string => {
   return hex?.terrain.color || '#f0f0f0'
 }
 
+// Get danger border styling
+const getDangerStroke = (dangerLevel: string): { color: string; width: number; dasharray?: string } => {
+  switch (dangerLevel) {
+    case 'unsafe':
+      return { color: '#FFA500', width: 1.5, dasharray: '4,2' } // Orange dashed
+    case 'risky':
+      return { color: '#FF4500', width: 2, dasharray: '2,1' } // Red-orange dashed
+    case 'deadly':
+      return { color: '#8B0000', width: 2.5 } // Dark red thick
+    default:
+      return { color: '#333333', width: 1 } // Default black
+  }
+}
+
 // Handle hex click
 const handleHexClick = (q: number, r: number): void => {
   // Only create hex if not panning (to distinguish between pan and click)
@@ -251,8 +265,9 @@ const viewTransform = computed(() => {
             <path 
               :d="hexagonPath"
               :fill="getHexColor(hex)"
-              stroke="#333333"
-              stroke-width="2"
+              :stroke="getDangerStroke(hex.danger.level).color"
+              :stroke-width="getDangerStroke(hex.danger.level).width"
+              :stroke-dasharray="getDangerStroke(hex.danger.level).dasharray"
             />
             <text
               text-anchor="middle"
@@ -323,6 +338,29 @@ const viewTransform = computed(() => {
       <div class="flex items-center gap-2">
         <div class="w-4 h-4 rounded bg-gray-200 border border-gray-400"></div>
         <span class="text-sm text-gray-700">Empty</span>
+      </div>
+    </div>
+
+    <!-- Danger Legend -->
+    <div class="mt-3 pt-3 border-t border-gray-300">
+      <h3 class="text-sm font-semibold text-gray-700 mb-2 text-center">Danger Levels</h3>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded border-2 border-gray-800"></div>
+          <span class="text-sm text-gray-700">Safe</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded border-3" style="border: 3px dashed #FFA500;"></div>
+          <span class="text-sm text-gray-700">Unsafe</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded border-4" style="border: 4px dashed #FF4500;"></div>
+          <span class="text-sm text-gray-700">Risky</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded" style="border: 5px solid #8B0000;"></div>
+          <span class="text-sm text-gray-700">Deadly</span>
+        </div>
       </div>
     </div>
   </div>

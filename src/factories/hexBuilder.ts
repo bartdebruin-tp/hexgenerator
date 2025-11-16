@@ -1,6 +1,7 @@
 import type { Hex, HexCoordinates } from '../types/hex'
 import type { TerrainType } from '../stores/terrain'
 import { useTerrainStore } from '../stores/terrain'
+import { rollDangerLevel } from '../services/diceService'
 
 /**
  * Builder pattern voor het maken van Hex objecten
@@ -8,6 +9,7 @@ import { useTerrainStore } from '../stores/terrain'
 export class HexBuilder {
   private coordinates: HexCoordinates = { q: 0, r: 0 }
   private terrainType: TerrainType | null = null
+  private dangerLevel: { level: 'safe' | 'unsafe' | 'risky' | 'deadly', roll: number } | null = null
   private terrainStore = useTerrainStore()
 
   /**
@@ -51,6 +53,14 @@ export class HexBuilder {
   }
 
   /**
+   * Set het danger level
+   */
+  setDangerLevel(level: 'safe' | 'unsafe' | 'risky' | 'deadly', roll: number = 1): this {
+    this.dangerLevel = { level, roll }
+    return this
+  }
+
+  /**
    * Build de hex met de geconfigureerde waardes
    */
   build(): Hex {
@@ -61,11 +71,15 @@ export class HexBuilder {
     // Genereer unieke ID gebaseerd op coordinates
     const id = `hex_${this.coordinates.q}_${this.coordinates.r}`
 
+    // Determine danger level (use custom if set, otherwise roll)
+    const danger = this.dangerLevel ?? rollDangerLevel()
+
     return {
       id,
       coordinates: { ...this.coordinates },
       terrain,
       terrainType: finalTerrainType,
+      danger,
       createdAt: Date.now()
     }
   }
@@ -76,6 +90,7 @@ export class HexBuilder {
   reset(): this {
     this.coordinates = { q: 0, r: 0 }
     this.terrainType = null
+    this.dangerLevel = null
     return this
   }
 }
@@ -97,8 +112,13 @@ function getNeighborCoordinates(q: number, r: number): HexCoordinates[] {
 /**
  * Factory function voor eenvoudige hex creatie
  */
-export function createHex(q: number, r: number, terrainType?: TerrainType, existingHexMap?: Map<string, Hex>): Hex {
+export function createHex(q: number, r: number, terrainType?: TerrainType, existingHexMap?: Map<string, Hex>, forceSafe: boolean = false): Hex {
   const builder = new HexBuilder().setCoordinates(q, r)
+  
+  // Force safe if specified (for starting hex)
+  if (forceSafe) {
+    builder.setDangerLevel('safe', 1)
+  }
   
   if (terrainType) {
     builder.setTerrainType(terrainType)

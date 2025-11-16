@@ -6,12 +6,21 @@ export interface HexCoordinates {
   r: number  // row
 }
 
+// Danger level types
+export type DangerLevel = 'safe' | 'unsafe' | 'risky' | 'deadly'
+
+export interface DangerInfo {
+  level: DangerLevel
+  roll: number
+}
+
 // Hex tile definition
 export interface Hex {
   id: string
   coordinates: HexCoordinates
   terrain: Terrain
   terrainType: TerrainType
+  danger: DangerInfo
   createdAt: number
 }
 

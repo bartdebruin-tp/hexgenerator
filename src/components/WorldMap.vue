@@ -158,7 +158,8 @@ const handleHexClick = (q: number, r: number): void => {
   const id = `hex_${q}_${r}`
   
   if (!hexMap.value.has(id)) {
-    const newHex = createHex(q, r)
+    // Pass existing hex map to influence terrain generation
+    const newHex = createHex(q, r, undefined, hexMap.value)
     hexMap.value.set(id, newHex)
   }
 }

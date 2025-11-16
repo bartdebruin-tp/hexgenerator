@@ -81,15 +81,48 @@ export class HexBuilder {
 }
 
 /**
+ * Get neighboring hex coordinates (6 directions in axial coordinates)
+ */
+function getNeighborCoordinates(q: number, r: number): HexCoordinates[] {
+  return [
+    { q: q + 1, r: r },     // east
+    { q: q - 1, r: r },     // west
+    { q: q, r: r + 1 },     // southeast
+    { q: q, r: r - 1 },     // northwest
+    { q: q + 1, r: r - 1 }, // northeast
+    { q: q - 1, r: r + 1 }  // southwest
+  ]
+}
+
+/**
  * Factory function voor eenvoudige hex creatie
  */
-export function createHex(q: number, r: number, terrainType?: TerrainType): Hex {
+export function createHex(q: number, r: number, terrainType?: TerrainType, existingHexMap?: Map<string, Hex>): Hex {
   const builder = new HexBuilder().setCoordinates(q, r)
   
   if (terrainType) {
     builder.setTerrainType(terrainType)
   } else {
-    builder.useRandomTerrain()
+    // Check for neighboring terrains to influence generation
+    if (existingHexMap) {
+      const neighborCoords = getNeighborCoordinates(q, r)
+      const neighborTerrains: TerrainType[] = []
+      
+      neighborCoords.forEach(coord => {
+        const neighborId = `hex_${coord.q}_${coord.r}`
+        const neighbor = existingHexMap.get(neighborId)
+        if (neighbor) {
+          neighborTerrains.push(neighbor.terrainType)
+        }
+      })
+      
+      // Use terrain store with neighbor influence
+      const terrainStore = useTerrainStore()
+      const terrainType = terrainStore.getRandomTerrainType(neighborTerrains)
+      builder.setTerrainType(terrainType)
+    } else {
+      builder.useRandomTerrain()
+    }
   }
   
   return builder.build()

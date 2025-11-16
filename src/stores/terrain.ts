@@ -71,8 +71,43 @@ export const useTerrainStore = defineStore('terrain', () => {
   }
 
   // Get random terrain type using 2d6 roll
-  function getRandomTerrainType(): TerrainType {
-    // Use dice service to roll 2d6
+  function getRandomTerrainType(neighborTerrains?: TerrainType[]): TerrainType {
+    // Count neighboring terrain types
+    const terrainCount = new Map<TerrainType, number>()
+    
+    if (neighborTerrains && neighborTerrains.length > 0) {
+      neighborTerrains.forEach(terrain => {
+        terrainCount.set(terrain, (terrainCount.get(terrain) || 0) + 1)
+      })
+      
+      // Get most common terrain type
+      let maxCount = 0
+      let dominantTerrain: TerrainType | null = null
+      
+      terrainCount.forEach((count, terrain) => {
+        if (count > maxCount) {
+          maxCount = count
+          dominantTerrain = terrain
+        }
+      })
+      
+      // If 3 or more neighbors have the same terrain, 50% chance to use that terrain
+      if (dominantTerrain && maxCount >= 3) {
+        const influenceRoll = Math.random()
+        if (influenceRoll < 0.5) {
+          return dominantTerrain
+        }
+      }
+      // If 2 neighbors have the same terrain, 25% chance to use that terrain
+      else if (dominantTerrain && maxCount >= 2) {
+        const influenceRoll = Math.random()
+        if (influenceRoll < 0.25) {
+          return dominantTerrain
+        }
+      }
+    }
+    
+    // Use dice service to roll 2d6 for normal generation
     const roll = rollDice(2, 6).total
     
     // Map roll to terrain type
@@ -94,8 +129,8 @@ export const useTerrainStore = defineStore('terrain', () => {
   }
 
   // Get random terrain
-  function getRandomTerrain(): Terrain {
-    const type = getRandomTerrainType()
+  function getRandomTerrain(neighborTerrains?: TerrainType[]): Terrain {
+    const type = getRandomTerrainType(neighborTerrains)
     return terrains[type]
   }
 

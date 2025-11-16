@@ -1,4 +1,4 @@
-# Faction Pyramid
+# VUE Starter Kit
 
 An organizational chart application built with Vue.js, Vite, and Tailwind CSS.
 
@@ -25,7 +25,7 @@ If you don't have them installed, download and install Node.js from [https://nod
 2. Navigate to the project directory:
 
 ```bash
-cd FactionPyramid
+cd projectName
 ```
 
 3. Install the project dependencies:

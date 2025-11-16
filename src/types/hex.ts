@@ -20,6 +20,7 @@ export type LocationType = 'landmark' | 'settlement' | 'lair' | 'dungeon'
 export interface LocationInfo {
   type: LocationType
   name: string
+  mainBuilding?: string
 }
 
 // Hex tile definition

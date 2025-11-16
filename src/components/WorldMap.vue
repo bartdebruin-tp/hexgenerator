@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { Hex } from '@/types/hex'
 import { createHex } from '@/factories/hexBuilder'
 import { MapPinIcon } from '@heroicons/vue/24/solid'
+import HexInfoPopup from './HexInfoPopup.vue'
 
 interface Props {
   width?: number
@@ -28,6 +29,10 @@ const isPanning = ref(false)
 const panOffset = ref({ x: 0, y: 0 })
 const panStart = ref({ x: 0, y: 0 })
 const svgRef = ref<SVGSVGElement | null>(null)
+
+// Popup state
+const selectedHex = ref<Hex | null>(null)
+const isPopupVisible = ref(false)
 
 // Calculate hex dimensions
 const hexWidth = computed(() => props.hexSize * 2)
@@ -179,6 +184,19 @@ const handleHexClick = (q: number, r: number): void => {
   }
 }
 
+// Handle clicking on existing hex to show info
+const handleExistingHexClick = (hex: Hex): void => {
+  if (isPanning.value) return
+  selectedHex.value = hex
+  isPopupVisible.value = true
+}
+
+// Close popup
+const closePopup = (): void => {
+  isPopupVisible.value = false
+  selectedHex.value = null
+}
+
 // Pan handlers
 const handleMouseDown = (event: MouseEvent): void => {
   isPanning.value = true
@@ -262,6 +280,7 @@ const viewTransform = computed(() => {
           <g 
             :transform="`translate(${hexToPixel(hex.coordinates.q, hex.coordinates.r).x + hexWidth / 2}, ${hexToPixel(hex.coordinates.q, hex.coordinates.r).y + hexHeight / 2})`"
             class="cursor-pointer hover:opacity-90 transition-opacity"
+            @click="handleExistingHexClick(hex)"
           >
             <path 
               :d="hexagonPath"
@@ -303,6 +322,13 @@ const viewTransform = computed(() => {
         </g>
       </svg>
     </div>
+
+    <!-- Hex Info Popup -->
+    <HexInfoPopup 
+      :hex="selectedHex"
+      :is-visible="isPopupVisible"
+      @close="closePopup"
+    />
 
     <!-- Legend -->
     <div class="mt-4 flex flex-wrap gap-3 justify-center">

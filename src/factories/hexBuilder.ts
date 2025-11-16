@@ -94,7 +94,12 @@ export class HexBuilder {
       if (locationRoll >= 1 && locationRoll <= 3) {
         finalLocation = { type: 'landmark', name: generateLandmark().name }
       } else if (locationRoll === 4) {
-        finalLocation = { type: 'settlement', name: generateSettlement().name }
+        const settlement = generateSettlement()
+        finalLocation = { 
+          type: 'settlement', 
+          name: settlement.name,
+          mainBuilding: settlement.mainBuilding
+        }
       } else if (locationRoll === 5) {
         finalLocation = { type: 'lair', name: generateLair().name }
       } else if (locationRoll === 6) {

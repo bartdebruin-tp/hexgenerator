@@ -75,6 +75,14 @@ export function rollDangerLevel(): { level: 'safe' | 'unsafe' | 'risky' | 'deadl
 }
 
 /**
+ * Roll 1d12 (one twelve-sided die)
+ * @returns The result of one d12 roll (1-12)
+ */
+export function roll1d12(): number {
+  return rollDie(12)
+}
+
+/**
  * Roll 1d20 (one twenty-sided die)
  * @returns The result of one d20 roll (1-20)
  */

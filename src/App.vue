@@ -3,9 +3,15 @@ import { ref, onMounted } from 'vue'
 import { useSampleStore } from '@/stores/sample'
 import { useCounter } from '@/composables/useCounter'
 import TypeScriptExample from '@/components/TypeScriptExample.vue'
+import WorldMap from '@/components/WorldMap.vue'
+import { createHex } from '@/factories/hexBuilder'
+import type { Hex } from '@/types/hex'
 
 // Type-safe reactive data
 const message = ref<string>('Hello Vue with TypeScript!')
+
+// Hex list
+const hexList = ref<Hex[]>([])
 
 // Store gebruiken
 const sampleStore = useSampleStore()
@@ -29,6 +35,14 @@ const {
 // Methods met explicit typing
 const updateMessage = (newMessage: string): void => {
   message.value = newMessage
+}
+
+// Create new hex
+const createNewHex = (): void => {
+  const q = Math.floor(Math.random() * 10)
+  const r = Math.floor(Math.random() * 10)
+  const newHex = createHex(q, r)
+  hexList.value.push(newHex)
 }
 
 // Event handlers for child component
@@ -108,6 +122,59 @@ onMounted(() => {
             >
               Update Message
             </button>
+          </div>
+
+          <!-- Hex Generator Section -->
+          <div class="mt-8 border-t pt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+              Hex Generator
+            </h2>
+            
+            <button 
+              @click="createNewHex"
+              class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg transition-colors font-semibold mb-4"
+            >
+              Create New Hex
+            </button>
+
+            <div v-if="hexList.length > 0" class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700 mb-2">Generated Hexes:</h3>
+              <ul class="space-y-2">
+                <li 
+                  v-for="hex in hexList" 
+                  :key="hex.id"
+                  class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="font-semibold text-gray-800">{{ hex.id }}</span>
+                      <span class="text-gray-600 ml-4">
+                        Coordinates: ({{ hex.coordinates.q }}, {{ hex.coordinates.r }})
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span 
+                        class="px-3 py-1 rounded-full text-white font-medium"
+                        :style="{ backgroundColor: hex.terrain.color }"
+                      >
+                        {{ hex.terrainType }}
+                      </span>
+                      <span class="text-sm text-gray-500">
+                        Cost: {{ hex.terrain.movementCost }}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div v-else class="text-gray-500 text-center py-4">
+              No hexes created yet. Click the button to create one!
+            </div>
+          </div>
+
+          <!-- World Map Component -->
+          <div class="mt-8 border-t pt-6">
+            <WorldMap :width="8" :height="8" :hex-size="30" />
           </div>
 
           <!-- TypeScript Component Example -->

@@ -1,65 +1,147 @@
-# VUE Starter Kit
+# Vue 3.5 + TypeScript Starter Kit
 
-An organizational chart application built with Vue.js, Vite, and Tailwind CSS.
+Deze Vue.js applicatie is volledig omgezet naar TypeScript met Vue 3.5 en de Composition API. Het project demonstreert moderne Vue.js ontwikkeling met type-safe code.
 
-## Prerequisites
+## ✨ Kenmerken
 
-Before you begin, ensure you have the following installed on your system:
+- **Vue 3.5** met Composition API
+- **TypeScript** voor volledige type safety
+- **Pinia** voor state management met types
+- **Vite** voor snelle development
+- **TailwindCSS** voor styling
+- **Custom Composables** met TypeScript
+- **Type-safe Components** met defineProps en defineEmits
 
-- **Node.js** (version 22.x or higher recommended)
-- **npm** (comes with Node.js)
+## 🏗️ Project Structuur
 
-To check if you have Node.js and npm installed, run:
-
-```bash
-node --version
-npm --version
+```
+src/
+├── main.ts                     # Entry point met TypeScript
+├── App.vue                     # Hoofd component met <script setup lang="ts">
+├── components/
+│   └── TypeScriptExample.vue   # Voorbeeld component met volledige typing
+├── composables/
+│   ├── useCounter.ts           # Type-safe counter composable
+│   └── useApi.ts               # API composable met generics
+├── stores/
+│   └── sample.ts               # Pinia store met TypeScript
+└── types/
+    └── index.ts                # Gedeelde type definities
 ```
 
-If you don't have them installed, download and install Node.js from [https://nodejs.org/](https://nodejs.org/). npm is included with Node.js.
-
-## Installation
-
-1. Clone or download this repository to your local machine
-
-2. Navigate to the project directory:
+## 🚀 Scripts
 
 ```bash
-cd projectName
-```
-
-3. Install the project dependencies:
-
-```bash
-npm install
-```
-
-This will install all required packages including Vue.js, Vite, Tailwind CSS, and other dependencies.
-
-## Running the Development Server
-
-To start the development server:
-
-```bash
+# Development server starten
 npm run dev
-```
 
-The application will be available at `http://localhost:5173` (or another port if 5173 is already in use). The dev server includes hot module replacement, so changes you make will be reflected immediately in the browser.
+# TypeScript type checking
+npm run type-check
 
-## Building for Production
-
-To create a production build:
-
-```bash
+# Build voor productie
 npm run build
-```
 
-The optimized files will be generated in the `dist` directory.
-
-### Preview Production Build
-
-To preview the production build locally:
-
-```bash
+# Preview build
 npm run preview
 ```
+
+## 💡 TypeScript Kenmerken
+
+### 1. Composition API met Types
+
+```typescript
+// Reactive refs met expliciete typing
+const count = ref<number>(0)
+const message = ref<string>('Hello TypeScript!')
+
+// Computed properties met type inference
+const doubleCount = computed(() => count.value * 2)
+
+// Methods met expliciete return types
+const increment = (): void => {
+  count.value++
+}
+```
+
+### 2. Type-safe Component Props
+
+```typescript
+interface Props {
+  title: string
+  count?: number
+  isVisible?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  count: 0,
+  isVisible: true
+})
+```
+
+### 3. Event Emits met Types
+
+```typescript
+interface Emits {
+  (e: 'increment'): void
+  (e: 'update:count', value: number): void
+  (e: 'click', event: MouseEvent): void
+}
+
+const emit = defineEmits<Emits>()
+```
+
+### 4. Pinia Store met TypeScript
+
+```typescript
+interface SampleData {
+  sampleName: string
+}
+
+export const useSampleStore = defineStore('sample', () => {
+  const sampleName = ref<string>('Sample Name')
+  
+  function exportSample(): SampleData {
+    return { sampleName: sampleName.value }
+  }
+  
+  return { sampleName, exportSample }
+})
+```
+
+### 5. Custom Composables
+
+```typescript
+export function useCounter(options: UseCounterOptions = {}): UseCounterReturn {
+  const count = ref<number>(initialValue)
+  
+  const increment = (): void => {
+    if (count.value < max) count.value += step
+  }
+  
+  return { count, increment, /* ... */ }
+}
+```
+
+## 🔧 TypeScript Configuratie
+
+- **tsconfig.json**: Strict TypeScript configuratie
+- **Type checking**: Ingebouwd in build proces
+- **Vue SFC support**: Volledige TypeScript support in .vue bestanden
+- **Path mapping**: @/ alias voor src/ directory
+- **IDE support**: IntelliSense en type checking in VS Code
+
+## 📚 Vue 3.5 + TypeScript Best Practices
+
+1. **Gebruik expliciete types** voor reactive refs
+2. **Definieer interfaces** voor props en emits
+3. **Type je stores** met TypeScript
+4. **Maak herbruikbare composables** met generics
+5. **Gebruik strict TypeScript** configuratie
+6. **Documenteer types** in aparte bestanden
+
+## 🔗 Nuttige Links
+
+- [Vue 3 TypeScript Guide](https://vuejs.org/guide/typescript/composition-api.html)
+- [Vue 3 Composition API](https://vuejs.org/guide/extras/composition-api-faq.html)
+- [Pinia TypeScript](https://pinia.vuejs.org/cookbook/composables.html)
+- [Vite TypeScript](https://vitejs.dev/guide/features.html#typescript)

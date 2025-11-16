@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { rollDice } from '../services/diceService'
 
 // Terrain types
 export type TerrainType = 'grass' | 'forest' | 'mountain' | 'swamp' | 'desert' | 'hills' | 'coastal' | 'wetlands' | 'savannah' | 'deadlands'
@@ -69,13 +70,27 @@ export const useTerrainStore = defineStore('terrain', () => {
     return terrains[type]
   }
 
-  // Get random terrain type
+  // Get random terrain type using 2d6 roll
   function getRandomTerrainType(): TerrainType {
-    const types: TerrainType[] = [
-      'grass', 'forest', 'mountain', 'swamp', 'desert', 
-      'hills', 'coastal', 'wetlands', 'savannah', 'deadlands'
-    ]
-    return types[Math.floor(Math.random() * types.length)]
+    // Use dice service to roll 2d6
+    const roll = rollDice(2, 6).total
+    
+    // Map roll to terrain type
+    const rollToTerrain: Record<number, TerrainType> = {
+      2: 'deadlands',
+      3: 'desert',
+      4: 'savannah',
+      5: 'swamp',
+      6: 'forest',
+      7: 'grass',
+      8: 'forest',
+      9: 'wetlands',
+      10: 'hills',
+      11: 'mountain',
+      12: 'coastal'
+    }
+    
+    return rollToTerrain[roll]
   }
 
   // Get random terrain

@@ -14,6 +14,14 @@ export interface DangerInfo {
   roll: number
 }
 
+// Location types
+export type LocationType = 'landmark' | 'settlement' | 'lair' | 'dungeon'
+
+export interface LocationInfo {
+  type: LocationType
+  name: string
+}
+
 // Hex tile definition
 export interface Hex {
   id: string
@@ -21,6 +29,7 @@ export interface Hex {
   terrain: Terrain
   terrainType: TerrainType
   danger: DangerInfo
+  location?: LocationInfo
   createdAt: number
 }
 

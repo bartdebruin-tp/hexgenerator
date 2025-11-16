@@ -6,6 +6,7 @@ import TypeScriptExample from '@/components/TypeScriptExample.vue'
 import WorldMap from '@/components/WorldMap.vue'
 import { createHex } from '@/factories/hexBuilder'
 import type { Hex } from '@/types/hex'
+import { MapPinIcon } from '@heroicons/vue/24/solid'
 
 // Type-safe reactive data
 const message = ref<string>('Hello Vue with TypeScript!')
@@ -153,12 +154,17 @@ onMounted(() => {
                       </span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span 
-                        class="px-3 py-1 rounded-full text-white font-medium"
-                        :style="{ backgroundColor: hex.terrain.color }"
-                      >
-                        {{ hex.terrainType }}
-                      </span>
+                      <MapPinIcon 
+                        v-if="hex.location" 
+                        :class="{
+                          'w-6 h-6': true,
+                          'text-blue-500': hex.location.type === 'landmark',
+                          'text-green-500': hex.location.type === 'settlement',
+                          'text-red-500': hex.location.type === 'lair',
+                          'text-purple-500': hex.location.type === 'dungeon'
+                        }"
+                        :title="`${hex.location.type}: ${hex.location.name}`"
+                      />
                       <span class="text-sm text-gray-500">
                         Cost: {{ hex.terrain.movementCost }}
                       </span>

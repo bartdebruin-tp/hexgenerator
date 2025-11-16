@@ -3,6 +3,11 @@
  * Responsible for rolling dice and returning results
  */
 
+import { generateLandmark as generateLandmarkFromService } from './landmarkService'
+import { generateSettlement as generateSettlementFromService } from './settlementService'
+import { generateLair as generateLairFromService } from './lairService'
+import { generateDungeon as generateDungeonFromService } from './dungeonService'
+
 export interface DiceRollResult {
   total: number
   rolls: number[]
@@ -97,4 +102,40 @@ export function rollWithDisadvantage(sides: number): number {
   const roll1 = rollDie(sides)
   const roll2 = rollDie(sides)
   return Math.min(roll1, roll2)
+}
+
+/**
+ * @deprecated Use landmarkService.generateLandmark() instead
+ * Generate a random landmark name
+ * @returns A random landmark name
+ */
+export function generateLandmark(): string {
+  return generateLandmarkFromService().name
+}
+
+/**
+ * @deprecated Use settlementService.generateSettlement() instead
+ * Generate a random settlement name
+ * @returns A random settlement name
+ */
+export function generateSettlement(): string {
+  return generateSettlementFromService().name
+}
+
+/**
+ * @deprecated Use lairService.generateLair() instead
+ * Generate a random lair name
+ * @returns A random lair name
+ */
+export function generateLair(): string {
+  return generateLairFromService().name
+}
+
+/**
+ * @deprecated Use dungeonService.generateDungeon() instead
+ * Generate a random dungeon name
+ * @returns A random dungeon name
+ */
+export function generateDungeon(): string {
+  return generateDungeonFromService().name
 }

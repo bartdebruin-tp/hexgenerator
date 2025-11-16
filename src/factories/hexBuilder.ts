@@ -1,7 +1,11 @@
-import type { Hex, HexCoordinates } from '../types/hex'
+import type { Hex, HexCoordinates, LocationInfo } from '../types/hex'
 import type { TerrainType } from '../stores/terrain'
 import { useTerrainStore } from '../stores/terrain'
-import { rollDangerLevel } from '../services/diceService'
+import { rollDangerLevel, roll1d6 } from '../services/diceService'
+import { generateLandmark } from '../services/landmarkService'
+import { generateSettlement } from '../services/settlementService'
+import { generateLair } from '../services/lairService'
+import { generateDungeon } from '../services/dungeonService'
 
 /**
  * Builder pattern voor het maken van Hex objecten
@@ -10,6 +14,7 @@ export class HexBuilder {
   private coordinates: HexCoordinates = { q: 0, r: 0 }
   private terrainType: TerrainType | null = null
   private dangerLevel: { level: 'safe' | 'unsafe' | 'risky' | 'deadly', roll: number } | null = null
+  private location: LocationInfo | undefined = undefined
   private terrainStore = useTerrainStore()
 
   /**
@@ -61,6 +66,14 @@ export class HexBuilder {
   }
 
   /**
+   * Set the location
+   */
+  setLocation(location: LocationInfo | undefined): this {
+    this.location = location
+    return this
+  }
+
+  /**
    * Build de hex met de geconfigureerde waardes
    */
   build(): Hex {
@@ -74,12 +87,28 @@ export class HexBuilder {
     // Determine danger level (use custom if set, otherwise roll)
     const danger = this.dangerLevel ?? rollDangerLevel()
 
+    // Roll 1d6 for location (1-3 = landmark, 4 = settlement, 5 = lair, 6 = dungeon)
+    let finalLocation: LocationInfo | undefined = this.location
+    if (finalLocation === undefined) {
+      const locationRoll = roll1d6()
+      if (locationRoll >= 1 && locationRoll <= 3) {
+        finalLocation = { type: 'landmark', name: generateLandmark().name }
+      } else if (locationRoll === 4) {
+        finalLocation = { type: 'settlement', name: generateSettlement().name }
+      } else if (locationRoll === 5) {
+        finalLocation = { type: 'lair', name: generateLair().name }
+      } else if (locationRoll === 6) {
+        finalLocation = { type: 'dungeon', name: generateDungeon().name }
+      }
+    }
+
     return {
       id,
       coordinates: { ...this.coordinates },
       terrain,
       terrainType: finalTerrainType,
       danger,
+      location: finalLocation,
       createdAt: Date.now()
     }
   }
@@ -91,6 +120,7 @@ export class HexBuilder {
     this.coordinates = { q: 0, r: 0 }
     this.terrainType = null
     this.dangerLevel = null
+    this.location = undefined
     return this
   }
 }

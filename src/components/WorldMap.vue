@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import type { Hex } from '@/types/hex'
 import { createHex } from '@/factories/hexBuilder'
+import { MapPinIcon } from '@heroicons/vue/24/solid'
 
 interface Props {
   width?: number
@@ -269,15 +270,25 @@ const viewTransform = computed(() => {
               :stroke-width="getDangerStroke(hex.danger.level).width"
               :stroke-dasharray="getDangerStroke(hex.danger.level).dasharray"
             />
-            <text
-              text-anchor="middle"
-              dominant-baseline="middle"
-              class="text-xs fill-white font-semibold pointer-events-none"
-              font-size="10"
-              dy="-8"
-            >
-              {{ hex.terrainType }}
-            </text>
+            <g v-if="hex.location">
+              <foreignObject
+                :x="-10"
+                :y="-18"
+                width="20"
+                height="20"
+              >
+                <MapPinIcon 
+                  :class="{
+                    'w-5 h-5 drop-shadow-lg': true,
+                    'text-blue-500': hex.location.type === 'landmark',
+                    'text-green-500': hex.location.type === 'settlement',
+                    'text-red-500': hex.location.type === 'lair',
+                    'text-purple-500': hex.location.type === 'dungeon'
+                  }"
+                  :title="`${hex.location.type}: ${hex.location.name}`"
+                />
+              </foreignObject>
+            </g>
             <text
               text-anchor="middle"
               dominant-baseline="middle"

@@ -1,14 +1,8 @@
 import { defineStore } from 'pinia'
 import { rollDice } from '../services/diceService'
+import type { Terrain, TerrainType } from '../interfaces/terrain'
 
-// Terrain types
-export type TerrainType = 'grass' | 'forest' | 'mountain' | 'swamp' | 'desert' | 'hills' | 'coastal' | 'wetlands' | 'savannah' | 'deadlands'
-
-export interface Terrain {
-  type: TerrainType
-  color: string
-  movementCost: number
-}
+export type { Terrain, TerrainType }
 
 export const useTerrainStore = defineStore('terrain', () => {
   // State met terrain types

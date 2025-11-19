@@ -7,11 +7,9 @@ import { generateLandmark as generateLandmarkFromService } from './landmarkServi
 import { generateSettlement as generateSettlementFromService } from './settlementService'
 import { generateLair as generateLairFromService } from './lairService'
 import { generateDungeon as generateDungeonFromService } from './dungeonService'
+import type { DiceRollResult } from '../interfaces/dice'
 
-export interface DiceRollResult {
-  total: number
-  rolls: number[]
-}
+export type { DiceRollResult }
 
 /**
  * Roll a single die with specified number of sides

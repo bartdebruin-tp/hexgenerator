@@ -1,23 +1,7 @@
 import { ref, computed, watch, type Ref } from 'vue'
+import type { UseCounterOptions, UseCounterReturn } from '../interfaces/composables'
 
-// Types voor de composable
-export interface UseCounterOptions {
-  min?: number
-  max?: number
-  step?: number
-  initialValue?: number
-}
-
-export interface UseCounterReturn {
-  count: Ref<number>
-  doubleCount: Ref<number>
-  increment: () => void
-  decrement: () => void
-  reset: () => void
-  set: (value: number) => void
-  isAtMin: Ref<boolean>
-  isAtMax: Ref<boolean>
-}
+export type { UseCounterOptions, UseCounterReturn }
 
 /**
  * Composable voor counter functionaliteit met TypeScript

@@ -3,11 +3,9 @@
  * Responsible for generating and managing dungeons
  */
 
-export interface Dungeon {
-  name: string
-  description?: string
-  levels?: number
-}
+import type { Dungeon } from '../interfaces/dungeon'
+
+export type { Dungeon }
 
 const DUNGEONS = [
   'The Forgotten Crypt',

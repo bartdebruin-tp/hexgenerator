@@ -4,16 +4,9 @@
  */
 
 import { roll1d20, roll1d12 } from './diceService'
+import type { Settlement, Hamlet } from '../interfaces/settlement'
 
-export interface Settlement {
-  name: string
-  description?: string
-  population?: number
-}
-
-export interface Hamlet extends Settlement {
-  mainBuilding: string
-}
+export type { Settlement, Hamlet }
 
 const SETTLEMENTS = [
   'Camp',

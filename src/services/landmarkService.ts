@@ -3,10 +3,9 @@
  * Responsible for generating and managing landmarks
  */
 
-export interface Landmark {
-  name: string
-  description?: string
-}
+import type { Landmark } from '../interfaces/landmark'
+
+export type { Landmark }
 
 const LANDMARKS = [
   'Ancient Ruins',

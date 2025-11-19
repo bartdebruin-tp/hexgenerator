@@ -3,11 +3,9 @@
  * Responsible for generating and managing lairs
  */
 
-export interface Lair {
-  name: string
-  description?: string
-  inhabitant?: string
-}
+import type { Lair } from '../interfaces/lair'
+
+export type { Lair }
 
 const LAIRS = [
   'Dragon\'s Lair',

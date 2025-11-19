@@ -98,7 +98,7 @@ export class HexBuilder {
         finalLocation = { 
           type: 'settlement', 
           name: settlement.name,
-          mainBuilding: settlement.mainBuilding
+          mainBuilding: 'mainBuilding' in settlement ? settlement.mainBuilding : undefined
         }
       } else if (locationRoll === 5) {
         finalLocation = { type: 'lair', name: generateLair().name }

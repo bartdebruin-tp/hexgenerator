@@ -1,4 +1,5 @@
 import { ref, type Ref } from 'vue'
+import type { UseApiReturn } from '../interfaces/composables'
 
 // Types lokaal definiëren voor dit voorbeeld
 interface ApiResponse<T> {
@@ -20,15 +21,7 @@ interface User {
   email: string
 }
 
-// Types voor API responses
-
-export interface UseApiReturn<T> {
-  data: Ref<T | null>
-  loading: Ref<boolean>
-  error: Ref<ApiError | null>
-  execute: (url: string, options?: RequestInit) => Promise<T | null>
-  reset: () => void
-}
+export type { UseApiReturn }
 
 /**
  * Composable voor API calls met TypeScript
